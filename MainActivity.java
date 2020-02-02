@@ -1,4 +1,4 @@
-package com.example.timer0;
+package com.example.timer2;
 
 import android.os.Bundle;
 
@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     TextView counter;
     Button btnStartStop;
     Integer count;
+    long time;
 
     // Create the Handler object (on the main thread by default)
     Handler handler = new Handler();
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
+
+            long new_time, delay_ms;
+
             // increment the counter
             count += 1;
             // Do something here on the main thread
@@ -36,7 +40,14 @@ public class MainActivity extends AppCompatActivity {
             counter.setText(String.valueOf(count));
             // Repeat this the same runnable code block again another 1 seconds
             // 'this' is referencing the Runnable object
-            handler.postDelayed(this, 1000);
+            new_time = System.currentTimeMillis(); // get the current milliseconds
+            delay_ms = (time + 1000) - new_time;
+            Log.d("Handlers", "Delay of:".concat(String.valueOf(delay_ms)));
+            if (delay_ms < 0) {
+                delay_ms = 0;
+            }
+            time += 1000;
+            handler.postDelayed(this, delay_ms);
         }
     };
 
@@ -46,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         if (btnStartStop.getText().equals("Start")){
             // Start the initial runnable task by posting through the handler
             count = 0;
+            time= System.currentTimeMillis(); // get the current milliseconds
             handler.post(runnableCode);
             btnStartStop.setText(R.string.stop);
         }
